@@ -105,6 +105,7 @@ func main() {
 	var cassandraNodes nodes
 	flag.Var(&cassandraNodes, "n", "list of cassandra IPs")
 	keyspace := flag.String("k", "translations", "cassandra keyspace")
+	port := flag.Int("p", 8080, "listen port")
 
 	flag.Parse()
 	if len(cassandraNodes) == 0 {
@@ -114,6 +115,7 @@ func main() {
 
 	Logger.Info("using cassandra ips: %v", cassandraNodes)
 	Logger.Info("cassandra keyspace: %s", *keyspace)
+	Logger.Info("listening port: %d", *port)
 	cluster := gocql.NewCluster(cassandraNodes...)
 	cluster.Timeout = 100 * time.Millisecond
 	cluster.NumConns = 10
@@ -128,5 +130,5 @@ func main() {
 
 	http.HandleFunc("/status", PingHandler)
 	http.HandleFunc("/translationList", TranslationListHandler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
