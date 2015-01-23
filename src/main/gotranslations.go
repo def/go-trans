@@ -98,7 +98,7 @@ func TranslationListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	format := logging.MustStringFormatter("%{time:2006-01-02 15:04:05.999} %{level} %{message}")
+	format := logging.MustStringFormatter("%{time:2006-01-02 15:04:05,999} %{level} %{message}")
 	logging.SetFormatter(format)
 	logging.SetLevel(logging.DEBUG, "go-translation")
 
