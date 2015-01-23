@@ -88,7 +88,8 @@ func TranslationListHandler(w http.ResponseWriter, r *http.Request) {
 	res.Write([]byte("</translations>"))
 	if err := iter.Close(); err != nil {
 		Logger.Info("application.%s: finished handler TranslationListHandler: total=%0.2f code=503", requestId, time.Since(start).Seconds()*1000)
-		http.Error(w, "site param must be int", http.StatusServiceUnavailable)
+		Logger.Error("failed to get data from cassandra: %s", err)
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 		return
 	}
 	w.Header().Set("Content-Type", "text/xml")
