@@ -79,7 +79,9 @@ func TranslationListHandler(w http.ResponseWriter, r *http.Request) {
 
     for iter.Scan(&name, &value) {
         delete(keys, name)
-        res.Write([]byte(fmt.Sprintf("<translation name=\"%s\">%s</translation>", name, value)))
+        res.Write([]byte(fmt.Sprintf(`<translation name="%s">`, name)))
+        xml.EscapeText(res, []byte(value))
+        res.Write([]byte("</translation>"))
     }
     for k, _ := range keys {
         res.Write([]byte(fmt.Sprintf("<translation name=\"%s\">[%s:%d][%s]</translation>", k, strings.ToLower(langArgs[0]), site, k)))
@@ -128,5 +130,7 @@ func main() {
 
     http.HandleFunc("/status", PingHandler)
     http.HandleFunc("/translationList", TranslationListHandler)
-    http.ListenAndServe(":9005", nil)
+    hostPort := ":9005"
+    log.Printf("Listening on %v", hostPort)
+    http.ListenAndServe(hostPort, nil)
 }
